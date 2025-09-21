@@ -2,6 +2,10 @@ import express from 'express';
 import WasteReport from '../Models/WasteReportModel.js';
 import multer from 'multer';
 import path from 'path';
+import ApiError from '../utils/apiError.js';
+// import upload from '../utils/cloudinary.js'
+import uploadCloud from '../utils/cloudinary.js';
+import WasteReportModel from '../Models/WasteReportModel.js';
 
 const router = express.Router();
 
@@ -25,6 +29,27 @@ router.post('/', upload.single('photo'), async (req, res) => {
 
     // Handle photo file path
     const photo = req.file ? req.file.path : '';
+
+
+    
+    const ImagePath = req.files?.image[0]?.path;
+    if(!ImagePath){
+      throw new ApiError(400,'photo is required')
+    }
+
+    const img = await uploadCloud(ImagePath)
+
+    if(!img){1
+      throw new ApiError(400,'photo is required')
+    }
+     
+    WasteReportModel.create({
+      photo:img.url
+    })
+
+
+
+
 
     // Create report object - only include phone if it's not empty
     const reportData = {
