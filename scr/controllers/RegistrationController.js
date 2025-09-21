@@ -1,6 +1,8 @@
 import Registration from "../scr/Models/RegistrationModel.js";
+import asyncHandler from '../utils/asyncHandler.js'
 
-export const registerUser = async (req, res) => {
+
+export const registerUser = asyncHandler(async (req, res) => {
   try {
     const { firstName, lastName, email, phone, password, confirmPassword } = req.body;
 
@@ -30,4 +32,5 @@ export const registerUser = async (req, res) => {
     console.error(error);
     res.status(500).json({ errors: ["Server error"] });
   }
-};
+
+})

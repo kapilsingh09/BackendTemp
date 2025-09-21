@@ -1,9 +1,9 @@
 //higher order function
 
 const asyncHandler = (requestHanler) =>{
-    (req,res,next)=>{
-        Promise.resolve(requestHanler(req,res,next)).
-        catch((err)=> next(err))
+    return (req,res,next)=>{
+        Promise.resolve(requestHanler(req,res,next)).catch
+        ((err)=> next(err))
     }
 } 
 
