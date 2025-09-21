@@ -8,6 +8,7 @@ import connectDB from "./db/index.js";
 import RegistrationRoute from './Routes/RegistrationRoutes.js'
 import path from "path";
 import { error } from "console";
+import cookieParser from "cookie-parser";
 
 
 
@@ -20,7 +21,7 @@ app.use(cors({
 app.use(express.json({limit:"19kb"}));
 app.use(express.urlencoded({extended:true,limit:'19kb'}))
 app.use(express.static("public"))
-// app.use(cokkieParser())
+app.use(cookieParser())
 // app.use()
 
 // Routes
