@@ -1,14 +1,15 @@
 import ApiError from "../utils/apiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
-import LoginUser from "../Models/LoginModel.js";
+import Registration from "../Models/RegistrationModel.js";
 import ApiResponse from "../utils/apiResponse.js";
 import jwt from "jsonwebtoken";
+import { json } from "express";
 
 // 🔹 Helper function to generate tokens and save refreshToken in DB
 const generateAccessTokenAndRefreshTokens = async (userId) => {
   try {
     // find user by ID
-    const user = await LoginUser.findById(userId);
+    const user = await Registration.findById(userId);
 
     if (!user) {
       throw new ApiError(404, "User not found");
@@ -33,53 +34,63 @@ const generateAccessTokenAndRefreshTokens = async (userId) => {
 
 // 🔹 Login user
 export const userLogin = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
 
-  // check inputs
-  if (!email || !password) {
-    throw new ApiError(400, "Email and password are required");
-  }
+    const { email, password } = req.body;
+    console.log(email);
+    
 
-  // find user
-  const user = await LoginUser.findOne({ email });
-  if (!user) {
-    throw new ApiError(404, "User not found");
-  }
+    // 1. check inputs
+    if (!email || !password) {
+        throw new ApiError(400, "Email and password are required");
+    }
 
-  // check password
-  const isPasswordValid = await user.isPasswordCorrect(password);
-  if (!isPasswordValid) {
-    throw new ApiError(401, "Invalid user credentials");
-  }
+    // 2. find user
+    const user = await Registration.findOne({ email });
 
-  // generate tokens
-  const { accessToken, refreshToken } =
-    await generateAccessTokenAndRefreshTokens(user._id);
+    if (!user) {
+        throw new ApiError(401, "Invalid email ");
+    }
 
-  // get safe user data (exclude password & refreshToken)
-  const loggedInUser = await LoginUser.findById(user._id).select(
-    "-password -refreshToken"
-  );
+    // 3. check password
+    const isPasswordValid = await user.isPasswordCorrect(password);
 
-  // cookie options
-  const options = {
-    httpOnly: true,
-    secure: true,
-    sameSite: "strict",
-  };
+    if (!isPasswordValid) {
+        throw new ApiError(401, "Invalid  password");
+    }
 
-  return res
-    .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
-    .json(
-      new ApiResponse(
-        200,
-        { user: loggedInUser, accessToken, refreshToken },
-        "User logged in successfully"
-      )
+    // 4. generate tokens
+    const { accessToken, refreshToken } =
+        await generateAccessTokenAndRefreshTokens(user._id);
+
+    // 5. get safe user data (exclude password & refreshToken)
+    const loggedInUser = await Registration.findById(user._id).select(
+        "-password -refreshToken"
     );
+
+    // 6. cookie options
+    const options = {
+        httpOnly: true,
+        // secure: process.env.NODE_ENV === "production", // HTTPS only in prod
+        secure: true, // HTTPS only in prod
+        sameSite: "strict",
+    };
+
+    // 7. send response
+    return res
+        .status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json(
+        new ApiResponse(
+            200,
+            { user: loggedInUser, accessToken, refreshToken },
+            "User logged in successfully"
+        
+        ));
+// return res.status(200).json({ message: "Success" });
+   
 });
+  
 
 // 🔹 Logout user
 export const logoutUser = asyncHandler(async (req, res) => {
@@ -161,3 +172,4 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
       )
     );
 });
+
