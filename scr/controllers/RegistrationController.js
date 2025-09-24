@@ -1,4 +1,4 @@
-import Registration from "../scr/Models/RegistrationModel.js";
+import Registration from "../Models/RegistrationModel.js";
 import asyncHandler from '../utils/asyncHandler.js'
 import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";

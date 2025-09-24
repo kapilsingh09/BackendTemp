@@ -3,9 +3,9 @@ const app = express();
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-import wasteRoutes from "./Routes/WasteRoutes.js";
-import connectDB from "./db/index.js";
-import RegistrationRoute from './Routes/RegistrationRoutes.js'
+import wasteRoutes from "./scr/Routes/WasteRoutes.js";
+import connectDB from "./scr/db/index.js";
+import RegistrationRoute from './scr/Routes/RegistrationRoutes.js'
 import path from "path";
 import { error } from "console";
 import cookieParser from "cookie-parser";
