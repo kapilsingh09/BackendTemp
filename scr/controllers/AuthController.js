@@ -99,7 +99,7 @@ export const logoutUser = asyncHandler(async (req, res) => {
   }
 
   // remove refreshToken from DB
-  await LoginUser.findByIdAndUpdate(
+  await Registration.findByIdAndUpdate(
     req.user._id,
     { $set: { refreshToken: undefined } },
     { new: true }
