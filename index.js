@@ -6,7 +6,7 @@ import wasteRoutes from "./scr/Routes/WasteRoutes.js";
 import connectDB from "./scr/db/index.js";
 import RegistrationRoute from './scr/Routes/RegistrationRoutes.js';
 import cookieParser from "cookie-parser";
-import { logoutUser, userLogin } from "./scr/controllers/AuthController.js";
+  // Auth routes are handled via RegistrationRoutes
 
 // Removed unnecessary imports:
 // - mongoose: not used directly here (connection handled in connectDB).
@@ -28,8 +28,7 @@ app.use(cookieParser());
 // Routes
 app.use("/api", RegistrationRoute);
 app.use("/api/waste", wasteRoutes);
-app.use("/api",logoutUser)
-app.use("/api",userLogin)
+// Login/Logout are exposed via RegistrationRoutes
 // Login is handled via POST /api/login in RegistrationRoutes
 
 app.get("/", (req, res) => {

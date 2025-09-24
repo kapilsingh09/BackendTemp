@@ -30,8 +30,8 @@ router.post('/login', userLogin)
 
 // router.route('/login').post(userLogin)
 
-// router.route("/logout").post(verifyJWT,logoutUser)
 router.route("/logout").get(verifyJWT,logoutUser)
+// router.route("/logout").get(verifyJWT,logoutUser)
 
 router.route('/refresh-token').post(refreshAccessToken)
 
