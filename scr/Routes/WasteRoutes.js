@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import { upload } from "../middlewares/multer.js";
 import WasteReport from "../Models/WasteReportModel.js";
@@ -27,6 +28,7 @@ router.post("/", upload.single("photo"), async (req, res) => {
       // Upload to Cloudinary
       const result = await cloudinary.uploader.upload(filePath, {
         folder: "waste_reports",
+        resource_type: "image",
       });
       photoUrl = result.secure_url;
 
@@ -52,7 +54,14 @@ router.post("/", upload.single("photo"), async (req, res) => {
 
     res.status(201).json({ message: "Waste report submitted", report: newReport });
   } catch (err) {
-    console.error("Error in /api/waste POST:", err);
+    console.error("Error in /api/waste POST:", {
+      message: err?.message,
+      name: err?.name,
+      cloudinary: {
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME ? "set" : "missing",
+        api_key: process.env.CLOUDINARY_API_KEY ? "set" : "missing",
+      },
+    });
     res.status(500).json({ error: "Failed to submit waste report" });
   }
 });
